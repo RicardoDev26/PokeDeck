@@ -1,0 +1,2 @@
+richi@MacBook-Pro-de-Ricardo PokeDeck % clear
+richi@MacBook-Pro-de-Ricardo PokeDeck % npm install --save-dev jest @testing-library/react-native @testing-library/jest-native babel-jest --legacy-peer-deps
