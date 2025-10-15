@@ -1,10 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import { StyledImage, StyledText, StyledTouchableOpacity, StyledView } from "../shared/styled";
 import CapsuleType from "./capsule/CapsuleType";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { ActivityIndicator } from "react-native";
-import { useFavorites } from "../store/favoritesStore";
-import LottieView from "lottie-react-native";
+import ButtonFavorite from "./Buttons/ButtonFavorite";
 
 interface Props{
     image: any
@@ -13,15 +12,6 @@ interface Props{
 }
 
 export default function SelectSearch({image, name, types}:Props){
-    const { favorites, toggleFavorite } = useFavorites()
-    const isFav = favorites.includes(name)
-    const animationRef = useRef<LottieView>(null)
-
-    useEffect(() => {
-        if (animationRef.current) {
-            isFav ? animationRef.current.play(0, 60) : animationRef.current.play(60, 0)
-        }
-    }, [isFav])
 
     const navigation = useNavigation()
     const [loading, setLoading] = useState(false);
@@ -70,16 +60,9 @@ export default function SelectSearch({image, name, types}:Props){
                     </StyledView>
                 </StyledView>
 
-                <StyledTouchableOpacity onPress={() => toggleFavorite(name)} className="absolute right-2">
-                    <LottieView
-                        ref={animationRef}
-                        source={require('../../assets/animations/AnimationHeart2.json')}
-                        autoPlay={false}
-                        speed={3}
-                        loop={false}
-                        style={{ width: 34, height: 34, backgroundColor: 'transparent' }}
-                        /> 
-                </StyledTouchableOpacity>
+                <StyledView className="absolute right-2">
+                    <ButtonFavorite name={name} />
+                </StyledView>
             </StyledTouchableOpacity>
         </StyledView>
     )

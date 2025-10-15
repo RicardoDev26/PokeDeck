@@ -1,10 +1,8 @@
-import { StyledImage, StyledText, StyledTouchableOpacity, StyledView } from "../../shared/styled"
+import { StyledImage, StyledText, StyledView } from "../../shared/styled"
 import CapsuleType from "../capsule/CapsuleType"
 import CardHeight from "./CardHeight"
 import SectionStatisticsBase from "../SectionStatisticsBase"
-import { useFavorites } from "../../store/favoritesStore"
-import { useEffect, useRef } from "react"
-import LottieView from 'lottie-react-native'
+import ButtonFavorite from "../Buttons/ButtonFavorite"
 
 
 interface Props{
@@ -14,21 +12,10 @@ interface Props{
     weight: number
     types: string[]
     stats: Record<string, number>
-
-
 }
 
 export default function CardStatistics({ image, name, height, weight, types, stats }: Props){
     const totalStats = Object.values(stats).reduce((acc, val) => acc + val, 0)
-    const { favorites, toggleFavorite } = useFavorites()
-    const animationRef = useRef<LottieView>(null)
-    const isFav = favorites.includes(name)
-
-    useEffect(() => {
-        if (animationRef.current) {
-            isFav ? animationRef.current.play(0, 60) : animationRef.current.play(60, 0)
-        }
-    }, [isFav])
 
     return(
         <StyledView className="w-full bg-white overflow-hidden rounded-lg border-solid border-[.6px] border-gray-400 mb-16">
@@ -50,16 +37,7 @@ export default function CardStatistics({ image, name, height, weight, types, sta
                             </StyledView>
                         </StyledView>
 
-                        <StyledTouchableOpacity onPress={() => toggleFavorite(name)} className="rounded-md w-9 bg-slate-50 h-7 items-center justify-center border-solid border-[.5px] border-slate-300">
-                                <LottieView
-                                    ref={animationRef}
-                                    source={require('../../../assets/animations/AnimationHeart2.json')}
-                                    autoPlay={false}
-                                    speed={3}
-                                    loop={false}
-                                    style={{ width: 21, height: 21, backgroundColor: 'transparent' }}
-                                    /> 
-                        </StyledTouchableOpacity>
+                        <ButtonFavorite name={name} />            
                     </StyledView>
 
                     <StyledView className="w-full flex-row mt-10 justify-between px-2">

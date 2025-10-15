@@ -1,9 +1,7 @@
-import { useEffect, useRef } from "react"
 import { StyledImage, StyledText, StyledTouchableOpacity, StyledView } from "../../shared/styled"
-import LottieView from 'lottie-react-native'
 import CapsuleType from "../capsule/CapsuleType"
 import { useNavigation } from "@react-navigation/native"
-import { useFavorites } from "../../store/favoritesStore"
+import ButtonFavorite from "../Buttons/ButtonFavorite"
 
 
 interface Props{
@@ -15,16 +13,7 @@ interface Props{
 
 export default function PokemonCard({ image, name, number, type }: Props){
 
-    const { favorites, toggleFavorite } = useFavorites()
-    const isFav = favorites.includes(name)
-    const animationRef = useRef<LottieView>(null)
     const navigation = useNavigation()
-
-    useEffect(() => {
-        if (animationRef.current) {
-            isFav ? animationRef.current.play(0, 60) : animationRef.current.play(60, 0)
-        }
-    }, [isFav])
 
     return(
         <StyledTouchableOpacity  onPress={() =>
@@ -58,16 +47,9 @@ export default function PokemonCard({ image, name, number, type }: Props){
                 </StyledView>
             </StyledView>
 
-            <StyledTouchableOpacity onPress={() => toggleFavorite(name)} className="absolute left-0.5">
-                <LottieView
-                    ref={animationRef}
-                    source={require('../../../assets/animations/AnimationHeart2.json')}
-                    autoPlay={false}
-                    speed={3}
-                    loop={false}
-                    style={{ width: 34, height: 34, backgroundColor: 'transparent' }}
-                  /> 
-            </StyledTouchableOpacity>
+            <StyledView className="absolute left-0.5">
+                <ButtonFavorite name={name} />
+            </StyledView>
 
             <StyledText className="absolute right-2 top-2 text-gray-400 text-xs">
                 #{number}

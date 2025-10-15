@@ -3,7 +3,7 @@ import { StyledTextInput, StyledView, StyledText } from "../shared/styled"
 import EvilIcons from "@expo/vector-icons/EvilIcons"
 import { usePokemonSearch } from "../hooks/usePokemonSeach"
 import SelectSearch from "./SelectSearch"
-import { ActivityIndicator, ScrollView } from "react-native"
+import { ActivityIndicator, FlatList } from "react-native"
 
 interface Props {
   query: string
@@ -30,6 +30,24 @@ export default function SearchBar({ query, setQuery }: Props) {
 
   const shouldShowResults = debouncedQuery.length > 0
 
+  const PAGE_SIZE = 20
+  const [page, setPage] = useState(1)
+  const [displayedResults, setDisplayedResults] = useState<any[]>([])
+
+  useEffect(() => {
+    setPage(1)
+    setDisplayedResults(results.slice(0, PAGE_SIZE))
+  }, [results])
+
+  const loadMore = () => {
+    if (displayedResults.length < results.length) {
+      const nextPage = page + 1
+      const nextItems = results.slice(0, nextPage * PAGE_SIZE)
+      setDisplayedResults(nextItems)
+      setPage(nextPage)
+    }
+  }
+
   return (
     <StyledView className="w-full">
       <StyledTextInput
@@ -52,16 +70,26 @@ export default function SearchBar({ query, setQuery }: Props) {
               <ActivityIndicator size="large" color="#FF0000" />
             </StyledView>
           ) : results.length > 0 ? (
-            <ScrollView>
-              {results.map((p) => (
+            <FlatList
+              data={displayedResults}
+              keyExtractor={(p) => p.name}
+              renderItem={({ item }) => (
                 <SelectSearch
-                  key={p.name}
-                  image={p.image}
-                  name={p.name}
-                  types={p.types}
+                  image={item.image}
+                  name={item.name}
+                  types={item.types}
                 />
-              ))}
-            </ScrollView>
+              )}
+              onEndReached={loadMore}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={
+                displayedResults.length < results.length ? (
+                  <StyledView className="py-3 items-center">
+                    <ActivityIndicator size="small" color="#FF0000" />
+                  </StyledView>
+                ) : null
+              }
+            />
           ) : (
             <StyledView className="py-3 px-4">
               <StyledText>No se encontraron Pokémon</StyledText>
