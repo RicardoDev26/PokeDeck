@@ -41,7 +41,7 @@ Demostrar dominio en:
 # Pasos de Instalacion
 
 ```
-npm install --legacy-peer-deps
+npm install
 npx expo start
 ```
 
